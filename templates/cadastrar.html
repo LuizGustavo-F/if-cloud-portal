@@ -1,0 +1,121 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block titulo %}Criar Conta - IF Cloud{% endblock %}
+
+{% block conteudo %}
+<style>
+    /* Sobrescrevendo o container para o layout dividido imersivo */
+    .container { 
+        padding: 0 !important; 
+        max-width: 1200px !important; 
+        overflow: hidden; 
+        display: flex; 
+        flex-wrap: wrap;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.2); 
+    }
+    
+    /* LADO ESQUERDO: Imagem de Fundo e mensagem de convite */
+    .lado-esquerdo {
+        flex: 1;
+        min-width: 400px;
+        background-image: linear-gradient(80deg, rgba(0, 77, 64, 0.6) 0%, rgba(0, 121, 107, 0.4) 100%), url('{% static "logo-chat-cort.png" %}');
+        background-size: cover;
+        background-position: center;
+        color: white;
+        padding: 80px 50px;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        text-align: center;
+    }
+    
+    /* LADO DIREITO: O formulário de cadastro */
+    .lado-direito {
+        flex: 1;
+        min-width: 300px;
+        background: white;
+        padding: 60px 50px; /* Um pouco menos de padding no topo para caber o formulário maior */
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+    }
+
+    /* ESTILIZANDO A MÁGICA DO DJANGO: Aplicando o visual moderno ao {{ form.as_p }} */
+    form p {
+        margin-bottom: 20px;
+    }
+    
+    form p label {
+        margin-top: 0; 
+        margin-bottom: 8px; 
+        color: #555; 
+        display: block; 
+        font-weight: bold; 
+        font-size: 0.95em;
+    }
+
+    form p input {
+        width: 100%; 
+        padding: 14px; 
+        border: 1px solid #e0e0e0; 
+        border-radius: 6px; 
+        background: #f4f6f9; 
+        box-sizing: border-box;
+        font-size: 1.05em;
+        color: #333;
+        transition: all 0.3s ease;
+    }
+
+    form p input:focus {
+        outline: none;
+        border-color: #00796b;
+        box-shadow: 0 0 0 3px rgba(0, 121, 107, 0.1);
+    }
+
+    form p span.helptext {
+        font-size: 0.85em;
+        color: #777;
+        display: block;
+        margin-top: 6px;
+        line-height: 1.4;
+    }
+    
+    /* Estilizando mensagens de erro do formulário */
+    ul.errorlist {
+        color: #c62828;
+        background-color: #ffebee;
+        padding: 10px 10px 10px 30px;
+        border-radius: 6px;
+        font-size: 0.9em;
+        font-weight: bold;
+        margin-bottom: 10px;
+    }
+</style>
+
+<div class="lado-esquerdo">
+    <h2 style="margin-top: 0; color: white; font-size: 2.5em; font-weight: bold;">Comece Agora!</h2>
+    <p style="color: #e0f2f1; line-height: 1.8; font-size: 1.15em; max-width: 500px; margin-top: 20px;">Junte-se ao IF Cloud e obtenha autonomia total para provisionar suas máquinas virtuais, rodar experimentos e alavancar suas pesquisas.</p>
+</div>
+
+<div class="lado-direito">
+    <h2 style="color: #004d40; text-align: center; margin-top: 0; margin-bottom: 30px; font-size: 2.2em; font-weight: bold;">CRIAR CONTA</h2>
+
+    <form method="POST">
+        {% csrf_token %}
+        
+        {{ form.as_p }}
+        
+        <button type="submit" class="btn" style="width: 100%; padding: 16px; font-size: 1.15em; border-radius: 6px; font-weight: bold; margin-top: 10px;">
+            Finalizar Cadastro
+        </button>
+    </form>
+
+    <div style="text-align: center; margin-top: 30px; padding-top: 25px; border-top: 1px solid #eee;">
+        <p style="color: #555; margin: 0; font-size: 1em;">
+            Já tem uma conta? 
+            <a href="{% url 'login' %}" style="color: #00796b; font-weight: bold; text-decoration: none;">Faça login aqui</a>
+        </p>
+    </div>
+</div>
+{% endblock %}

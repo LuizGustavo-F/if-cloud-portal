@@ -1,0 +1,14 @@
+{% extends 'base.html' %}
+{% block titulo %}Sucesso - IFMT Cloud{% endblock %}
+
+{% block conteudo %}
+    <h1>🎉 Pedido Recebido!</h1>
+    <div class="alerta">
+        <h3>A construção da <b>{{ nome_maquina }}</b> foi iniciada!</h3>
+        <p>Nossos robôs estão configurando a rede, instalando o Docker e o agente do Zabbix neste exato momento.</p>
+    </div>
+    <p><b>Atenção:</b> O processo de provisionamento leva em média <b>5 a 7 minutos</b> para ser concluído.</p>
+    <p>O IP de acesso será vinculado à rede do IFMT assim que a esteira finalizar o trabalho.</p>
+    <br>
+    <a href="/" class="btn">Voltar ao Início</a>
+{% endblock %}

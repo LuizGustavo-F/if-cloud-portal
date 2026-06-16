@@ -1,0 +1,120 @@
+{% extends 'base.html' %}
+{% block titulo %}Nova Máquina - IF Cloud{% endblock %}
+
+{% block conteudo %}
+<style>
+    /* Ajustes específicos para a página de criação no Tema Dark */
+    .page-title { margin-top: 0; margin-bottom: 30px; font-size: 2em; border-bottom: 1px solid var(--border-color); padding-bottom: 15px; color: var(--text-title); }
+    
+    /* Card do Assistente IA */
+    .ia-card { 
+        background-color: #202428; /* Fundo escuro para destacar do fundo do site */
+        border: 1px solid #333940;
+        border-radius: 8px; 
+        padding: 25px; 
+        margin-bottom: 35px;
+        border-left: 4px solid #bb86fc; /* Detalhe roxo futurista para a IA */
+    }
+    .ia-header { display: flex; align-items: center; margin-bottom: 15px; }
+    .ia-header h3 { margin: 0; color: #bb86fc; font-size: 1.3em; }
+    .ia-desc { color: #8e96a3; font-size: 0.95em; margin-bottom: 20px; line-height: 1.5; }
+    
+    /* Resultado da IA */
+    .ia-result {
+        background-color: rgba(187, 134, 252, 0.1);
+        border: 1px solid rgba(187, 134, 252, 0.3);
+        padding: 15px;
+        border-radius: 6px;
+        margin-top: 20px;
+        color: #e2d4f8;
+    }
+    .ia-result strong { color: #bb86fc; }
+
+    /* Botões customizados */
+    .btn-ia { background-color: #bb86fc; color: #111; margin-top: 15px; }
+    .btn-ia:hover { background-color: #a35bfa; }
+    
+    .btn-submit { background-color: var(--primary-color); color: #111; width: 100%; font-size: 1.1em; padding: 15px; margin-top: 30px; }
+    .btn-submit:hover { background-color: var(--primary-hover); }
+
+    hr.divisor { border: 0; border-top: 1px dashed var(--border-color); margin: 30px 0; }
+    
+    .form-group { margin-bottom: 20px; }
+    .form-group label { color: var(--text-title); font-size: 0.95em; margin-bottom: 8px; display: block; }
+    .form-text { display: block; font-size: 0.85em; color: #8e96a3; margin-top: 6px; }
+</style>
+
+<h2 class="page-title">Criar Novo Servidor</h2>
+
+{% if mensagem_erro %}
+    <div class="erro">{{ mensagem_erro }}</div>
+{% endif %}
+
+<div class="ia-card">
+    <div class="ia-header">
+        <h3>🤖 Assistente de Infraestrutura</h3>
+    </div>
+    <p class="ia-desc">Não sabe qual tamanho de servidor escolher? Responda abaixo e nossa Inteligência Artificial recomendará a melhor configuração para o seu projeto.</p>
+    
+    <form method="POST" action="{% url 'criar_vm' %}">
+        {% csrf_token %}
+        <div class="form-group">
+            <label>Qual o foco principal do seu projeto?</label>
+            <select name="aplicacao">
+                <option value="site_estatico" {% if aplicacao_escolhida == 'site_estatico' %}selected{% endif %}>Site Estático / Trabalho Acadêmico</option>
+                <option value="backend" {% if aplicacao_escolhida == 'backend' %}selected{% endif %}>API Backend</option>
+                <option value="banco_de_dados" {% if aplicacao_escolhida == 'banco_de_dados' %}selected{% endif %}>Banco de Dados</option>
+                <option value="machine_learning" {% if aplicacao_escolhida == 'machine_learning' %}selected{% endif %}>Machine Learning / Big Data</option>
+            </select>
+        </div>
+        
+        <div class="form-group">
+            <label>Qual a carga de acessos esperada?</label>
+            <select name="carga">
+                <option value="baixa" {% if carga_escolhida == 'baixa' %}selected{% endif %}>Baixa (Apenas eu ou um grupo pequeno para testes)</option>
+                <option value="alta" {% if carga_escolhida == 'alta' %}selected{% endif %}>Alta (Projeto em produção para a internet)</option>
+            </select>
+        </div>
+        
+        <button type="submit" class="btn btn-ia"> Consultar Especialista</button>
+    </form>
+
+    {% if recomendacao %}
+        <div class="ia-result">
+            <h4 style="margin-top: 0; margin-bottom: 10px; color: #bb86fc;">Recomendação da IA:</h4>
+            <p style="margin: 5px 0;"><strong>Hardware Ideal:</strong> {{ recomendacao.flavor_recomendado }}</p>
+            <p style="margin: 5px 0;"><strong>Especificações:</strong> {{ recomendacao.especificacoes }}</p>
+            <p style="margin: 5px 0;"><strong>Justificativa:</strong> {{ recomendacao.justificativa_da_ia }}</p>
+        </div>
+    {% endif %}
+</div>
+
+<hr class="divisor">
+
+<form method="POST" action="{% url 'processar' %}">
+    {% csrf_token %}
+    
+    <div class="form-group">
+        <label>Nome do Projeto / Máquina (sem espaços):</label>
+        <input type="text" name="nome_vm" placeholder="ex: tcc_backend" required pattern="[a-zA-Z0-9_]+" title="Apenas letras, números e underlines.">
+    </div>
+    
+    <div class="form-group">
+        <label>Tamanho do Servidor:</label>
+        <select name="tamanho_vm">
+            <option value="m1.tiny">m1.tiny (1 vCPU, 512MB RAM)</option>
+            <option value="if.small" selected>if.small (1 vCPU, 2GB RAM)</option>
+            <option value="m1.medium">m1.medium (2 vCPU, 4GB RAM)</option>
+            <option value="m1.large">m1.large (4 vCPU, 8GB RAM)</option>
+        </select>
+    </div>
+    
+    <div class="form-group">
+        <label>Sua Chave Pública SSH (Obrigatório para acesso):</label>
+        <input type="text" name="chave_ssh" placeholder="ex: ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQC..." required>
+        <span class="form-text">Cole aqui a sua chave .pub para garantir acesso seguro via terminal.</span>
+    </div>
+    
+    <button type="submit" class="btn btn-submit">🚀 Construir Máquina na Nuvem</button>
+</form>
+{% endblock %}

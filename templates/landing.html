@@ -1,0 +1,67 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IF Cloud - Infraestrutura como Serviço</title>
+    <style>
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; margin: 0; padding: 0; background-color: #f4f6f9; color: #333; }
+        
+        .hero { 
+            background-image: linear-gradient(135deg, rgba(0, 77, 64, 0.80) 0%, rgba(0, 121, 107, 0.85) 100%), url('{% static "logo-chat.png" %}');
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            color: white; 
+            padding: 80px 20px; 
+            text-align: center; 
+        }
+        .hero h1 { font-size: 3em; margin-bottom: 10px; }
+        
+        .hero p { font-size: 1.2em; max-width: 800px; margin: 0 auto 30px auto; line-height: 1.6; color: #e0f2f1; text-align: justify; }
+        
+        .botoes { display: flex; justify-content: center; gap: 20px; margin-top: 30px; }
+        .btn-entrar { background-color: white; color: #004d40; padding: 12px 30px; text-decoration: none; border-radius: 5px; font-weight: bold; font-size: 1.1em; transition: 0.3s; }
+        .btn-entrar:hover { background-color: #e0f2f1; }
+        .btn-cadastrar { background-color: transparent; color: white; border: 2px solid white; padding: 10px 30px; text-decoration: none; border-radius: 5px; font-weight: bold; font-size: 1.1em; transition: 0.3s; }
+        .btn-cadastrar:hover { background-color: rgba(255,255,255,0.1); }
+        .features { display: flex; justify-content: center; flex-wrap: wrap; gap: 30px; padding: 60px 20px; max-width: 1000px; margin: 0 auto; }
+        .card-feature { background: white; padding: 30px; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.05); flex: 1; min-width: 250px; text-align: center; }
+        .card-feature h3 { color: #004d40; }
+    </style>
+</head>
+<body>
+
+    <div class="hero">
+        <h1>☁️ IF Cloud</h1>
+        <p>Para alunos de pós-graduação e pesquisadores do Instituto Federal que necessitam de infraestrutura computacional robusta, escalável e reprodutível para execução de experimentos acadêmicos, mas enfrentam limitações orçamentárias e barreiras financeiras associadas à nuvem pública, o IF Cloud é uma plataforma de nuvem acadêmica institucional que permite provisionar servidores e laboratórios virtuais sob demanda, de forma gratuita, segura e controlada, promovendo autonomia tecnológica e fortalecimento da pesquisa aplicada.</p>
+        
+        <div class="botoes">
+            <a href="{% url 'login' %}" class="btn-entrar">Acessar Painel</a>
+            <a href="/contas/cadastrar/" class="btn-cadastrar">Criar Conta</a>
+        </div>
+    </div>
+
+    <div class="features">
+        <div class="card-feature">
+            <h3 style="font-size: 2em; margin: 0 0 15px 0;">🤖</h3>
+            <h3>IA Integrada</h3>
+            <p>Não sabe qual servidor usar? Nosso Sistema Especialista analisa seu projeto e recomenda o hardware exato.</p>
+        </div>
+        
+        <div class="card-feature">
+            <h3 style="font-size: 2em; margin: 0 0 15px 0;">🚀</h3>
+            <h3>Autonomia Total</h3>
+            <p>Crie e gerencie seus próprios laboratórios virtuais. Suba servidores prontos para rodar modelos de Data Science, simulações e projetos de IoT em poucos cliques.</p>
+        </div>
+
+        <div class="card-feature">
+            <h3 style="font-size: 2em; margin: 0 0 15px 0; ">🔒</h3>
+            <h3>Acesso Secure</h3>
+            <p>Controle total da sua máquina virtual através de chaves públicas SSH e IPs flutuantes dedicados.</p>
+        </div>
+    </div>
+
+</body>
+</html>

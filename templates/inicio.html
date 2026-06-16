@@ -1,0 +1,119 @@
+{% extends 'base.html' %}
+{% block titulo %}Meu Painel - IF Cloud{% endblock %}
+
+{% block conteudo %}
+<style>
+    .container { max-width: 1200px !important; background: transparent !important; box-shadow: none !important; border: none !important; padding: 0 !important; margin-top: 20px !important;}
+    
+    .page-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border-color); padding-bottom: 20px; margin-bottom: 30px; }
+    .page-header h2 { color: var(--text-title); margin: 0; font-weight: 300; }
+    .page-header span { color: var(--primary-color); font-weight: bold; }
+
+    .dash-grid { display: flex; gap: 20px; margin-bottom: 30px; }
+    .dash-card { flex: 1; background: var(--bg-card); padding: 25px; border-radius: 6px; border: 1px solid var(--border-color); display: flex; justify-content: space-between; align-items: center; border-left: 4px solid #333; }
+    
+    .dash-card.total { border-left-color: #56CCF2; } /* Azul */
+    .dash-card.online { border-left-color: #2ecc71; } /* Verde */
+    .dash-card.build { border-left-color: #f39c12; } /* Laranja */
+    
+    .dash-card h4 { margin: 0; color: #8e96a3; font-size: 0.9em; text-transform: uppercase; letter-spacing: 1px; }
+    .dash-card h2 { margin: 10px 0 0 0; color: #ffffff; font-size: 2.5em; line-height: 1; }
+
+    .table-container { background: var(--bg-card); border-radius: 6px; border: 1px solid var(--border-color); overflow: hidden; }
+    table { width: 100%; border-collapse: collapse; text-align: left; }
+    th { background-color: #202428; padding: 15px 20px; color: #8e96a3; font-size: 0.85em; text-transform: uppercase; border-bottom: 2px solid var(--border-color); }
+    td { padding: 15px 20px; border-bottom: 1px solid var(--border-color); color: var(--text-main); vertical-align: middle; }
+    tr:hover { background-color: #262b30; }
+    
+    .badge { padding: 5px 10px; border-radius: 20px; font-size: 0.85em; font-weight: bold; }
+    .badge-online { background-color: rgba(46, 204, 113, 0.1); color: #2ecc71; border: 1px solid #2ecc71; }
+    .badge-build { background-color: rgba(243, 156, 18, 0.1); color: #f39c12; border: 1px solid #f39c12; }
+    
+    .action-buttons { display: flex; gap: 10px; justify-content: flex-end; align-items: center; }
+    
+    .btn-gerenciar { background: transparent; color: #56CCF2; border: 1px solid #56CCF2; padding: 6px 12px; border-radius: 4px; text-decoration: none; font-weight: bold; font-size: 0.85em; transition: 0.2s; }
+    .btn-gerenciar:hover { background: #56CCF2; color: #111; }
+
+    .btn-destruir { background: transparent; color: var(--danger-color); border: 1px solid var(--danger-color); padding: 6px 12px; border-radius: 4px; font-weight: bold; font-size: 0.85em; cursor: pointer; transition: 0.2s; }
+    .btn-destruir:hover { background: var(--danger-color); color: #fff; }
+</style>
+
+<div class="page-header">
+    <h2>Overview da <span>Infraestrutura</span></h2>
+    <a href="{% url 'criar_vm' %}" class="btn">+ Novo Servidor</a>
+</div>
+
+{% if mensagem_erro %}
+    <div class="erro">{{ mensagem_erro }}</div>
+{% endif %}
+
+<div class="dash-grid">
+    <div class="dash-card total">
+        <div>
+            <h4>Minhas Máquinas</h4>
+            <h2>{{ total_vms }}</h2>
+        </div>
+        <div style="font-size: 3em; opacity: 0.8;">🖥️</div>
+    </div>
+    
+    <div class="dash-card online">
+        <div>
+            <h4>Instâncias Online</h4>
+            <h2>{{ vms_online }}</h2>
+        </div>
+        <div style="font-size: 3em; opacity: 0.8;">⚡</div>
+    </div>
+    
+    <div class="dash-card build">
+        <div>
+            <h4>Em Construção</h4>
+            <h2>{{ vms_construindo }}</h2>
+        </div>
+        <div style="font-size: 3em; opacity: 0.8;">⏳</div>
+    </div>
+</div>
+
+<div class="table-container">
+    <table>
+        <thead>
+            <tr>
+                <th>Nome do Servidor</th>
+                <th>Tamanho</th>
+                <th>Status</th>
+                <th>IP de Acesso (SSH)</th>
+                <th style="text-align: right;">Ações</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for maq in maquinas %}
+            <tr>
+                <td><strong style="color: #fff;">{{ maq.nome }}</strong></td>
+                <td>{{ maq.tamanho }}</td>
+                <td>
+                    {% if maq.status == 'Construindo...' %}
+                        <span class="badge badge-build">⏳ Em Construção</span>
+                    {% else %}
+                        <span class="badge badge-online">● Online</span>
+                    {% endif %}
+                </td>
+                <td style="font-family: monospace;">{{ maq.ip_flutuante|default:"Aguardando DHCP..." }}</td>
+                <td>
+                    <div class="action-buttons">
+                        <a href="{% url 'gerenciar_maquina' maq.nome %}" class="btn-gerenciar">⚙️ Gerenciar</a>
+                        
+                        <form action="{% url 'deletar_vm' maq.nome %}" method="POST" style="margin: 0;" onsubmit="return confirm('ATENÇÃO: Tem a certeza que deseja DESTRUIR a {{ maq.nome }}?');">
+                            {% csrf_token %}
+                            <button type="submit" class="btn-destruir">🗑️ Destruir</button>
+                        </form>
+                    </div>
+                </td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="5" style="text-align: center; padding: 40px; color: #8e96a3;">Nenhuma máquina encontrada. Clique em "+ Novo Servidor" para começar.</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

@@ -1,0 +1,100 @@
+{% extends 'base.html' %}
+{% load static %} {% block titulo %}Login - IF Cloud{% endblock %}
+
+{% block conteudo %}
+<style>
+    
+    .container { 
+        padding: 0 !important; 
+        max-width: 1200px !important; 
+        overflow: hidden; 
+        display: flex; 
+        flex-wrap: wrap;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.2); 
+    }
+    
+    .lado-esquerdo {
+        flex: 1;
+        min-width: 400px; 
+        background-image: linear-gradient(80deg, rgba(0, 77, 64, 0.6) 0%, rgba(0, 121, 107, 0.4) 100%), url('{% static "logo-chat-cort.png" %}');
+        background-size: cover;
+        background-position: center;
+        color: white;
+        padding: 80px 50px; 
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        text-align: center;
+    }
+    
+    
+    .lado-direito {
+        flex: 1;
+        min-width: 300px;
+        background: white;
+        padding: 80px 50px; /* Mais respiro visual */
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+    }
+    
+    
+    .input-moderno {
+        width: 100%; 
+        padding: 14px; 
+        margin-top: 5px; 
+        border: 1px solid #e0e0e0; 
+        border-radius: 6px; 
+        background: #f4f6f9; 
+        box-sizing: border-box;
+        font-size: 1.05em;
+        color: #333;
+    }
+    .input-moderno:focus {
+        outline: none;
+        border-color: #00796b;
+        box-shadow: 0 0 0 3px rgba(0, 121, 107, 0.1); /* Efeito de foco sutil */
+    }
+</style>
+
+<div class="lado-esquerdo">
+    <h2 style="margin-top: 0; color: white; font-size: 2.5em; font-weight: bold;">Bem-vindo!</h2>
+    <p style="color: #e0f2f1; line-height: 1.8; font-size: 1.15em; max-width: 500px; margin-top: 20px;">Acesse sua conta para continuar gerenciando sua infraestrutura e seus laboratórios no IF Cloud.</p>
+</div>
+
+<div class="lado-direito">
+    <h2 style="color: #004d40; text-align: center; margin-top: 0; font-size: 2.2em; font-weight: bold;">LOGIN</h2>
+    
+    {% if form.errors %}
+        <div style="background-color: #ffebee; color: #c62828; padding: 12px; border-radius: 6px; margin-bottom: 25px; text-align: center; font-size: 1em; font-weight: bold;">
+            Usuário ou senha incorretos. Tente novamente.
+        </div>
+    {% endif %}
+
+    <form method="post" style="margin-top: 30px;">
+        {% csrf_token %}
+        
+        <div style="margin-bottom: 25px;">
+            <label style="margin-top: 0; margin-bottom: 8px; color: #555; display: block; font-weight: bold; font-size: 0.95em;">Usuário</label>
+            <input type="text" name="username" placeholder="seu.usuario" required class="input-moderno">
+        </div>
+        
+        <div style="margin-bottom: 30px;">
+            <label style="margin-top: 0; margin-bottom: 8px; color: #555; display: block; font-weight: bold; font-size: 0.95em;">Senha</label>
+            <input type="password" name="password" placeholder="••••••••" required class="input-moderno">
+        </div>
+        
+        <button type="submit" class="btn" style="width: 100%; padding: 16px; font-size: 1.15em; border-radius: 6px; font-weight: bold;">
+            Entrar
+        </button>
+    </form>
+
+    <div style="text-align: center; margin-top: 40px; padding-top: 25px; border-top: 1px solid #eee;">
+        <p style="color: #555; margin: 0; font-size: 1em;">
+            Não tem uma conta? 
+            <a href="{% url 'cadastrar_usuario' %}" style="color: #00796b; font-weight: bold; text-decoration: none;">Inscrever-se</a>
+        </p>
+    </div>
+</div>
+{% endblock %}

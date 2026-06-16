@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <title>Gerenciar - {{ maquina.nome }}</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        /* TEMA ESCURO (Estilo Grafana) */
+        :root {
+            --bg-color: #111111;
+            --card-bg: #181b1f;  
+            --text-main: #cccccd;
+            --text-header: #ffffff;
+            --border-color: #2c3235;
+            --success-green: #2ecc71;
+            --danger-red: #e74c3c;
+        }
+
+        body { font-family: 'Roboto', 'Helvetica Neue', Arial, sans-serif; background-color: var(--bg-color); color: var(--text-main); margin: 0; padding: 20px; }
+        .container { max-width: 1200px; margin: 0 auto; }
+        
+        .header { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border-color); padding-bottom: 15px; margin-bottom: 25px; }
+        .header h2 { color: var(--text-header); margin: 0; font-weight: 300; }
+        .nav-buttons { display: flex; gap: 10px; }
+
+        .btn { padding: 10px 18px; border-radius: 4px; cursor: pointer; text-decoration: none; font-weight: bold; font-size: 0.9em; transition: 0.2s; border: none; }
+        .btn-voltar { background: transparent; color: #8e96a3; border: 1px solid #4a4f56; }
+        .btn-voltar:hover { background: rgba(255,255,255,0.1); }
+        .btn-danger { background: #b02a37; color: white; }
+        .btn-danger:hover { background: #c82333; }
+
+        .info-card { background: var(--card-bg); padding: 15px 20px; border-radius: 4px; border: 1px solid var(--border-color); margin-bottom: 25px; display: flex; gap: 40px; }
+        .info-item { display: flex; flex-direction: column; }
+        .info-label { font-size: 0.85em; color: #8e96a3; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 5px; }
+        .info-value { font-size: 1.2em; color: var(--text-header); font-weight: 500; }
+        #status-text { font-weight: bold; }
+        .status-online { color: var(--success-green); }
+        .status-building { color: #f39c12; }
+
+        .dashboard-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; }
+        
+        .chart-card { background: var(--card-bg); border-radius: 4px; border: 1px solid var(--border-color); padding: 15px; position: relative;}
+        .chart-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; border-bottom: 1px solid var(--border-color); padding-bottom: 10px;}
+        .chart-title { color: var(--text-header); font-size: 1.1em; font-weight: 400; margin: 0; }
+        .chart-meta { font-size: 1.2em; color: var(--text-header); font-family: monospace; }
+        
+        .canvas-container { position: relative; height: 200px; width: 100%; }
+
+        .disk-card { grid-column: span 1; display: flex; flex-direction: column; align-items: center;}
+        .disk-canvas-container { position: relative; height: 160px; width: 160px; margin: 0 auto;}
+        .disk-total-text { font-size: 1.2em; color: var(--text-header); margin-top: 10px; font-weight: bold;}
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="header">
+        <h2>{{ maquina.nome }} // Gerência Infra</h2>
+        <div class="nav-buttons">
+            <a href="{% url 'painel_maquinas' %}" class="btn btn-voltar">Voltar</a>
+            <form action="/deletar_maquina/{{ maquina.nome }}/" method="POST" style="margin: 0;" onsubmit="return confirm('ATENÇÃO IRREVERSÍVEL: Tem certeza que deseja DESTRUIR a {{ maquina.nome }} na nuvem?');">
+                {% csrf_token %}
+                <button type="submit" class="btn btn-danger">Destruir VM</button>
+            </form>
+        </div>
+    </div>
+
+    <div class="info-card">
+        <div class="info-item">
+            <span class="info-label">Status</span>
+            <span class="info-value" id="status-text">
+                {% if maquina.status == 'Construindo...' %}
+                    <span class="status-building">⏳ {{ maquina.status }}</span>
+                {% else %}
+                    <span class="status-online">● {{ maquina.status }}</span>
+                {% endif %}
+            </span>
+        </div>
+        <div class="info-item">
+            <span class="info-label">IP Flutuante</span>
+            <span class="info-value">{{ maquina.ip_flutuante|default:"N/A" }}</span>
+        </div>
+        <div class="info-item">
+            <span class="info-label">Tamanho</span>
+            <span class="info-value">{{ maquina.tamanho }}</span>
+        </div>
+    </div>
+
+    <div class="dashboard-grid">
+        <div class="chart-card">
+            <div class="chart-header">
+                <h3 class="chart-title">Utilização de CPU</h3>
+                <span class="chart-meta" id="cpu-current">--</span>
+            </div>
+            <div class="canvas-container">
+                <canvas id="graficoCpu"></canvas>
+            </div>
+        </div>
+
+        <div class="chart-card">
+            <div class="chart-header">
+                <h3 class="chart-title">Memória RAM</h3>
+                <span class="chart-meta" id="ram-current">--</span>
+            </div>
+            <div class="canvas-container">
+                <canvas id="graficoRam"></canvas>
+            </div>
+        </div>
+
+        <div class="chart-card disk-card">
+            <div class="chart-header" style="width: 100%">
+                <h3 class="chart-title">Uso de Disco (GB)</h3>
+            </div>
+            <div class="disk-canvas-container">
+                <canvas id="graficoDiscoPizza"></canvas>
+            </div>
+            <div class="disk-total-text">Total: <span id="disk-total">--</span> GB</div>
+        </div>
+
+        <div class="chart-card">
+            <div class="chart-header">
+                <h3 class="chart-title">Tráfego de Rede (ens3)</h3>
+                <span class="chart-meta" style="font-size: 0.9em; color: #8e96a3;">Mbps</span>
+            </div>
+            <div class="canvas-container">
+                <canvas id="graficoRedeLinha"></canvas>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    
+    Chart.defaults.color = '#cccccd'; 
+    Chart.defaults.borderColor = '#2c3235'; 
+    
+    const opcoesLinha = {
+        responsive: true,
+        maintainAspectRatio: false, 
+        plugins: { legend: { display: false } }, 
+        scales: {
+            x: { display: false }, 
+            y: { beginAtZero: true, max: 100, grid: { color: '#2c3235' }, ticks: { color: '#cccccd' } }
+        },
+        animation: { duration: 0 }, 
+        elements: { point: { radius: 0 } } 
+    };
+
+    const chartCpu = new Chart(document.getElementById('graficoCpu'), {
+        type: 'line',
+        data: {
+            labels: ['', '', '', '', '', '', '', '', '', ''],
+            datasets: [{
+                data: Array(10).fill(0),
+                borderColor: '#56CCF2', 
+                backgroundColor: 'rgba(86, 204, 242, 0.1)', 
+                fill: true, 
+                borderWidth: 1.5,
+                tension: 0.3
+            }]
+        },
+        options: opcoesLinha
+    });
+
+    const chartRam = new Chart(document.getElementById('graficoRam'), {
+        type: 'line',
+        data: {
+            labels: ['', '', '', '', '', '', '', '', '', ''],
+            datasets: [{
+                data: Array(10).fill(0),
+                borderColor: '#2ecc71', 
+                backgroundColor: 'rgba(46, 204, 113, 0.1)', 
+                fill: true, 
+                borderWidth: 1.5,
+                tension: 0.3
+            }]
+        },
+        options: opcoesLinha
+    });
+
+    const chartDiscoPizza = new Chart(document.getElementById('graficoDiscoPizza'), {
+        type: 'doughnut', 
+        data: {
+            labels: ['Usado', 'Livre'],
+            datasets: [{
+                data: [0, 0],
+                backgroundColor: ['#e74c3c', '#2c3235'], 
+                borderColor: '#181b1f', 
+                borderWidth: 2,
+                hoverOffset: 4
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            cutout: '70%', 
+            plugins: { legend: { display: false } } 
+        }
+    });
+
+    
+    const chartRedeLinha = new Chart(document.getElementById('graficoRedeLinha'), {
+        type: 'line',
+        data: {
+            labels: ['', '', '', '', '', '', '', '', '', ''],
+            datasets: [
+                {
+                    label: 'Entrada (In)',
+                    data: Array(10).fill(0),
+                    borderColor: '#bb86fc', 
+                    borderWidth: 1.5,
+                    elements: { point: { radius: 0 } },
+                    tension: 0.3
+                },
+                {
+                    label: 'Saída (Out)',
+                    data: Array(10).fill(0),
+                    borderColor: '#03dac6', 
+                    borderWidth: 1.5,
+                    elements: { point: { radius: 0 } },
+                    tension: 0.3
+                }
+            ]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: { legend: { display: false } },
+            scales: {
+                x: { display: false },
+                y: { beginAtZero: true, grid: { color: '#2c3235' }, title: { display: false }, ticks: { color: '#cccccd' } }
+            },
+            animation: { duration: 0 }
+        }
+    });
+
+    async function buscarMetricas() {
+        try {
+            const response = await fetch(`/api/metricas/{{ maquina.nome }}/`);
+            const dados = await response.json();
+
+            if (dados.erro) { console.error("Erro da API:", dados.erro); return; }
+            if (dados.status && dados.status !== "Online") { return; } 
+
+            chartCpu.data.datasets[0].data = dados.historico.cpu;
+            chartRam.data.datasets[0].data = dados.historico.ram;
+            
+            document.getElementById('cpu-current').innerText = `${dados.historico.cpu[dados.historico.cpu.length - 1]}%`;
+            document.getElementById('ram-current').innerText = `${dados.historico.ram[dados.historico.ram.length - 1]}%`;
+            
+            chartDiscoPizza.data.datasets[0].data = dados.pizza_disco.data;
+            document.getElementById('disk-total').innerText = dados.pizza_disco.total_gb;
+
+            chartRedeLinha.data.datasets[0].data = dados.historico.net_in;
+            chartRedeLinha.data.datasets[1].data = dados.historico.net_out;
+
+            chartCpu.update();
+            chartRam.update();
+            chartDiscoPizza.update();
+            chartRedeLinha.update();
+
+        } catch (error) { console.error("Erro ao buscar dados de monitoramento:", error); }
+    }
+
+    
+    buscarMetricas();
+    setInterval(buscarMetricas, 5000);
+</script>
+
+</body>
+</html>
