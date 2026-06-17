@@ -85,8 +85,8 @@ def executar_avaliacao():
     precisao = precision_score(gabarito_real, previsoes_da_ia)
     recall = recall_score(gabarito_real, previsoes_da_ia)
     
-    print("✅ Avaliação concluída com sucesso!")
-    print("\n📊 RESULTADOS OFICIAIS DO MOTOR PREDITIVO (IF CLOUD)")
+    print(" Avaliação concluída com sucesso!")
+    print("\n RESULTADOS OFICIAIS DO MOTOR PREDITIVO (IF CLOUD)")
     print("=" * 50)
     print(f"Total de Máquinas Analisadas: {len(gabarito_real)}")
     print(f"Acurácia Geral: {acuracia * 100:.1f}%  (Acertos totais)")
