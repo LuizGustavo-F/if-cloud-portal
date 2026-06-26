@@ -12,7 +12,6 @@ import base64
 import re 
 from .zabbix_service import ZabbixAPI
 
-# Função auxiliar para verificar se o usuário é admin
 def is_admin(user):
     return user.is_staff or user.is_superuser
 
@@ -213,7 +212,6 @@ def gerenciar_maquina(request, nome_vm):
 @login_required
 def metricas_maquina_api(request, nome_vm):
     try:
-        # ATUALIZAÇÃO: Permite que o JS do Visão Global (Admin) puxe métricas de qualquer VM
         if is_admin(request.user):
             maquina = Maquina.objects.get(nome=nome_vm)
         else:
@@ -232,7 +230,6 @@ def metricas_maquina_api(request, nome_vm):
         if "historico" in metricas:
             ia_preditiva = MotorPreditivo(limite_critico=95.0)
             
-            # Passamos os Arrays de histórico puro para a IA analisar
             analise_ia = ia_preditiva.avaliar_maquina(
                 historico_cpu=metricas["historico"]["cpu"],
                 historico_ram=metricas["historico"]["ram"]

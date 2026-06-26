@@ -4,7 +4,6 @@
 
 {% block conteudo %}
 <style>
-    /* Sobrescrevendo o container para o layout dividido imersivo */
     .container { 
         padding: 0 !important; 
         max-width: 1200px !important; 
@@ -14,7 +13,6 @@
         box-shadow: 0 10px 30px rgba(0,0,0,0.2); 
     }
     
-    /* LADO ESQUERDO: Imagem de Fundo e mensagem de convite */
     .lado-esquerdo {
         flex: 1;
         min-width: 400px;
@@ -30,18 +28,16 @@
         text-align: center;
     }
     
-    /* LADO DIREITO: O formulário de cadastro */
     .lado-direito {
         flex: 1;
         min-width: 300px;
         background: white;
-        padding: 60px 50px; /* Um pouco menos de padding no topo para caber o formulário maior */
+        padding: 60px 50px; 
         display: flex;
         flex-direction: column;
         justify-content: center;
     }
 
-    /* ESTILIZANDO A MÁGICA DO DJANGO: Aplicando o visual moderno ao {{ form.as_p }} */
     form p {
         margin-bottom: 20px;
     }
@@ -81,7 +77,6 @@
         line-height: 1.4;
     }
     
-    /* Estilizando mensagens de erro do formulário */
     ul.errorlist {
         color: #c62828;
         background-color: #ffebee;

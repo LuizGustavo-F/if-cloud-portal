@@ -112,11 +112,10 @@ USE_I18N = True
 USE_TZ = True
 
 
-import os # Se já tiver esse import lá em cima, não precisa repetir
+import os 
 
 STATIC_URL = 'static/'
 
-# Adicione estas linhas:
 STATICFILES_DIRS = [
     os.path.join(BASE_DIR, 'static'),
 ]

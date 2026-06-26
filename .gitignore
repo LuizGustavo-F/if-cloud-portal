@@ -9,5 +9,5 @@ db.sqlite3
 __pycache__/
 *.pyc
 
-# Ignorar variáveis de ambiente (se tiver no futuro)
+# Ignorar variáveis de ambiente 
 .env

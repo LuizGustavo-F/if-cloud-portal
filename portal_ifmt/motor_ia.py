@@ -38,15 +38,9 @@ class MotorInferenciaOpenStack:
         return self._gerar_resposta("if.small", "Configuração balanceada recomendada como padrão para uso geral.")
 
     def _gerar_resposta(self, flavor_id, justificativa):
-        # Junta a decisão do sistema com as especificações da máquina
         specs = self.flavors[flavor_id]
         return {
             "flavor_recomendado": flavor_id,
             "especificacoes": f"{specs['vcpus']} vCPUs, {specs['ram']}MB RAM, {specs['disk']}GB Disco",
             "justificativa_da_ia": justificativa
         }
-
-# --- Como testar isso no seu terminal ---
-# ia = MotorInferenciaOpenStack()
-# resultado = ia.avaliar_necessidade(aplicacao="banco_de_dados", carga="baixa")
-# print(resultado)

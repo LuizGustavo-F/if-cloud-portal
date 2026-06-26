@@ -4,8 +4,8 @@ import json
 class ZabbixAPI:
     def __init__(self):
         self.url = "http://10.1.140.70/api_jsonrpc.php" 
-        self.user = "luiz.carvalho"
-        self.password = "Viol@o2024"
+        self.user = ""
+        self.password = ""
         self.auth_token = None
         self.headers = {'Content-Type': 'application/json-rpc'}
 
