@@ -11,7 +11,7 @@ Este projeto é o portal de interface de usuário (frontend/backend) do ecossist
 
 O portal atua como a principal camada de abstração do projeto, permitindo que alunos e professores solicitem, provisionem e gerenciem Máquinas Virtuais (VMs) de forma autônoma, sem precisarem interagir diretamente com a complexidade do OpenStack (MicroStack) ou com as esteiras de Infraestrutura como Código.
 
-## 🚀 Principais Funcionalidades
+## Principais Funcionalidades
 
 * **Autosserviço de Instâncias:** Interface simplificada para criação de VMs padronizadas (*flavors* como `if.small`, `if.medium`) alinhadas aos recursos físicos legados do laboratório.
 * **Integração GitOps & IaC:** O portal atua como o gatilho amigável para as automações de provisionamento infraestrutural (Terraform) e gerência de configuração (Ansible) executadas nos bastidores.
@@ -19,7 +19,7 @@ O portal atua como a principal camada de abstração do projeto, permitindo que 
 * **Observabilidade Unificada:** Integração visual baseada na telemetria coletada pelo Zabbix e estruturada via Grafana para acompanhamento do consumo de recursos.
 * **Assistência Inteligente (Módulo IA):** Sistema de suporte embarcado que cruza a aplicação desejada pelo usuário com a carga estimada para recomendar o hardware ideal (evitando desperdício no cluster), aliado a um algoritmo preditivo que consome dados da API do Zabbix para alertar sobre o esgotamento iminente de recursos na nuvem.
 
-## 🛠️ Tecnologias e Arquitetura
+## Tecnologias e Arquitetura
 
 O portal foi construído para atuar como o maestro da stack de nuvem privada:
 
@@ -29,7 +29,7 @@ O portal foi construído para atuar como o maestro da stack de nuvem privada:
 * **Automação (Integrações):** Chamadas e engatilhos para Gitea, Terraform e Ansible.
 * **Monitoramento e Inteligência:** Integração com a API do Zabbix, utilizando `scikit-learn` para os modelos preditivos de saturação de infraestrutura.
 
-## ⚙️ Como Executar o Projeto Localmente
+## Como Executar o Projeto Localmente
 
 ### 1. Clone o repositório
 ```bash
