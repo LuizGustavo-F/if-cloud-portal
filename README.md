@@ -62,4 +62,4 @@ python manage.py runserver
 ```
 # O portal será acessado em: ```http://127.0.0.1:8000/```
 
-## Este repositório é parte integrante do projeto IF cloud, desenvolvido no IFMT Octayde Jorge da Silva. A equipe CTI, busca projetar uma plataforma de provisionamento autônoma, para realizar testes internos e possível uso de alunos em laboratório.
+*Arquitetura mantida e desenvolvida pela equipe técnica (CTI) do IFMT - Octayde Jorge da Silva. O repositório é parte integrando do projeto IF Cloud.*
