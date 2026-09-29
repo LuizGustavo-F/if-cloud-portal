@@ -1,121 +1,65 @@
-#  IF Cloud - Portal de Gestão de Nuvem com Inteligência Artificial
+# IF Cloud - Portal de Autosserviço e Gestão de Nuvem Privada
 
 ![Python](https://img.shields.io/badge/Python-3.10+-blue.svg)
 ![Django](https://img.shields.io/badge/Django-092E20?style=flat&logo=django&logoColor=white)
-![Scikit-Learn](https://img.shields.io/badge/scikit--learn-F7931E?style=flat&logo=scikit-learn&logoColor=white)
 ![OpenStack](https://img.shields.io/badge/OpenStack-ED1944?style=flat&logo=OpenStack&logoColor=white)
+![Terraform](https://img.shields.io/badge/Terraform-7B42BC?style=flat&logo=terraform&logoColor=white)
+![Ansible](https://img.shields.io/badge/Ansible-EE0000?style=flat&logo=ansible&logoColor=white)
 ![Zabbix](https://img.shields.io/badge/Zabbix-D40000?style=flat&logo=Zabbix&logoColor=white)
 
-Este projeto é um portal de provisionamento e monitoramento de infraestrutura em nuvem, desenvolvido para o ambiente acadêmico do Instituto Federal de Mato Grosso (IFMT). O sistema atua como uma camada de abstração sobre o OpenStack (MicroStack), permitindo que alunos e professores criem e gerenciem Máquinas Virtuais (VMs) de forma simplificada e inteligente.
+Este projeto é o portal de interface de usuário (frontend/backend) do ecossistema **IF Cloud**, uma infraestrutura de nuvem privada (IaaS) desenvolvida para a Coordenação de Tecnologia da Informação (CTI) do Instituto Federal de Mato Grosso (IFMT).
 
-O grande diferencial do IF Cloud é a sua **Arquitetura Híbrida de Inteligência Artificial**, que atua tanto na recomendação de hardware na criação da VM, quanto na prevenção de falhas durante a sua operação.
+O portal atua como a principal camada de abstração do projeto, permitindo que alunos e professores solicitem, provisionem e gerenciem Máquinas Virtuais (VMs) de forma autônoma, sem precisarem interagir diretamente com a complexidade do OpenStack (MicroStack) ou com as esteiras de Infraestrutura como Código.
 
----
+## 🚀 Principais Funcionalidades
 
-## Arquitetura de Inteligência Artificial
+* **Autosserviço de Instâncias:** Interface simplificada para criação de VMs padronizadas (*flavors* como `if.small`, `if.medium`) alinhadas aos recursos físicos legados do laboratório.
+* **Integração GitOps & IaC:** O portal atua como o gatilho amigável para as automações de provisionamento infraestrutural (Terraform) e gerência de configuração (Ansible) executadas nos bastidores.
+* **Acesso Direto (Provider Network):** Gestão simplificada para que as instâncias recebam IPs diretamente da sub-rede física da instituição, eliminando a necessidade de roteamento NAT complexo pelo usuário final.
+* **Observabilidade Unificada:** Integração visual baseada na telemetria coletada pelo Zabbix e estruturada via Grafana para acompanhamento do consumo de recursos.
+* **Assistência Inteligente (Módulo IA):** Sistema de suporte embarcado que cruza a aplicação desejada pelo usuário com a carga estimada para recomendar o hardware ideal (evitando desperdício no cluster), aliado a um algoritmo preditivo que consome dados da API do Zabbix para alertar sobre o esgotamento iminente de recursos na nuvem.
 
-O sistema é sustentado por dois motores distintos, cobrindo os paradigmas clássicos da disciplina de Sistemas Inteligentes:
+## 🛠️ Tecnologias e Arquitetura
 
-### 1. Tutor de Infraestrutura (IA Simbólica / GOFAI)
+O portal foi construído para atuar como o maestro da stack de nuvem privada:
 
-Um Sistema Especialista Baseado em Regras (*Rule-Based Expert System*) que atua como um arquiteto de nuvem virtual.
+* **Backend:** Python e Django (gestão de requisições, regras de negócio e integração via APIs).
+* **Frontend:** HTML5, CSS3 (Custom Dark Theme) e Django Templates.
+* **Orquestração Subjacente:** OpenStack (distribuição MicroStack).
+* **Automação (Integrações):** Chamadas e engatilhos para Gitea, Terraform e Ansible.
+* **Monitoramento e Inteligência:** Integração com a API do Zabbix, utilizando `scikit-learn` para os modelos preditivos de saturação de infraestrutura.
 
-* **Paradigma:** Determinístico (Lógica Proposicional).
-* **Mecanismo:** Utiliza Encadeamento para Frente (*Forward Chaining*) em uma Árvore de Decisão para cruzar a aplicação desejada pelo usuário com a carga estimada.
-* **Explainable AI (XAI):** O motor não apenas recomenda o hardware ideal (ex: `if.small`, `if.medium`, `if.large`), mas gera uma justificativa semântica explicando ao aluno o motivo arquitetural daquela escolha, evitando o desperdício de recursos do cluster.
-
-### 2. Motor Preditivo de Gargalos (IA Estatística / Machine Learning)
-
-Um algoritmo de monitoramento contínuo que consome a telemetria via API do Zabbix para prever o esgotamento de recursos (CPU e RAM).
-
-* **Algoritmo:** Regressão Linear Simples (`y = mx + b`) aplicada a Séries Temporais.
-* **Mecanismo:** O motor calcula o coeficiente angular (`m`) do histórico de consumo. Sendo uma tendência de alta contínua, a equação é invertida para prever em **quantos minutos** o servidor atingirá o limite crítico (95%), alertando os administradores antes que a queda ocorra.
-* **Métricas Oficiais de Validação (Dataset de Estresse):**
-  *  **Acurácia:** 95.0%
-  *  **Precisão:** 87.5% (Baixo índice de falsos alarmes)
-  *  **Recall (Sensibilidade):** 100.0% (Zero falhas silenciosas omitidas)
-
----
-
-## Tecnologias Utilizadas
-
-* **Backend:** Python, Django
-* **Frontend:** HTML5, CSS3 (Custom Dark Theme), Jinja/Django Templates
-* **Infraestrutura e Virtualização:** OpenStack (MicroStack)
-* **Monitoramento:** Zabbix API
-* **Data Science & IA:** `scikit-learn`, `matplotlib`, `csv` (para validação do modelo preditivo)
-
----
-
-## Como Executar o Projeto Localmente
+## ⚙️ Como Executar o Projeto Localmente
 
 ### 1. Clone o repositório
-
 ```bash
-git clone https://github.com/SEU_USUARIO/NOME_DO_REPO.git
+git clone [https://github.com/SEU_USUARIO/NOME_DO_REPO.git](https://github.com/SEU_USUARIO/NOME_DO_REPO.git)
 cd NOME_DO_REPO
-```
-
+````
 ### 2. Crie e ative o ambiente virtual
-
-```bash
+```
 python -m venv venv
-
+```
 # No Windows
+```
 venv\Scripts\activate
-
+```
 # No Linux/Mac
+```
 source venv/bin/activate
 ```
-
 ### 3. Instale as dependências
-
-```bash
-pip install django requests scikit-learn matplotlib
 ```
-
+pip install -r requirements.txt
+```
 ### 4. Execute as migrações do banco de dados
-
-```bash
+```
 python manage.py migrate
 ```
-
-### 5. Inicie o servidor Django
-
-```bash
+### 5. Inicie o serviço Django
+```
 python manage.py runserver
 ```
+# O portal será acessado em: ```http://127.0.0.1:8000/```
 
-O portal estará disponível em:
-
-```text
-http://127.0.0.1:8000/
-```
-
----
-
-## Como Rodar a Avaliação da IA (Métricas)
-
-Para conferir a eficácia matemática do Motor Preditivo, execute o script isolado de avaliação que utiliza o dataset simulado do Zabbix:
-
-```bash
-cd portal_ifmt
-python avaliar_ia.py
-```
-
----
-
-## Objetivo Acadêmico
-
-O IF Cloud foi desenvolvido com o objetivo de integrar conceitos de:
-
-* Computação em Nuvem
-* Virtualização
-* Monitoramento de Infraestrutura
-* Sistemas Inteligentes
-* Machine Learning
-* Sistemas Especialistas
-* Explainable AI (XAI)
-* Desenvolvimento Web com Django
-
-O projeto demonstra a aplicação prática de Inteligência Artificial na gestão de ambientes de nuvem privada, auxiliando usuários na tomada de decisão e permitindo a antecipação de problemas operacionais por meio de análise preditiva.
+## Este repositório é parte integrante do projeto IF cloud, desenvolvido no IFMT Octayde Jorge da Silva. A equipe CTI, busca projetar uma plataforma de provisionamento autônoma, para realizar testes internos e possível uso de alunos em laboratório.
