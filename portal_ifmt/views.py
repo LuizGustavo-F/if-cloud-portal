@@ -7,6 +7,10 @@ from .motor_ia import MotorInferenciaOpenStack
 from .motor_preditivo import MotorPreditivo # <-- IMPORTAMOS A NOVA IA AQUI
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth import login
+from django.http import HttpResponse
+from cryptography.hazmat.primitives.asymmetric import rsa
+from cryptography.hazmat.primitives import serialization
+from .models import Maquina, ChaveSSH  # Não esqueça de adicionar a ChaveSSH aqui
 import requests
 import base64
 import re 
@@ -54,7 +58,11 @@ def pagina_inicial(request):
 
 @login_required
 def pagina_criacao(request):
-    contexto = {} 
+    # BUSCAMOS AS CHAVES DO USUÁRIO LOGADO
+    contexto = {
+        'minhas_chaves': ChaveSSH.objects.filter(dono=request.user)
+    } 
+    
     if request.method == 'POST':
         aplicacao = request.POST.get('aplicacao')
         carga = request.POST.get('carga')
@@ -261,3 +269,56 @@ def visao_global(request):
     }
     
     return render(request, 'visao_global.html', contexto)
+
+@login_required
+def listar_chaves(request):
+    chaves = ChaveSSH.objects.filter(dono=request.user).order_by('-data_criacao')
+    return render(request, 'listar_chaves.html', {'chaves': chaves})
+
+@login_required
+def importar_chave(request):
+    """Opção 1: O usuário cola a chave pública que gerou no próprio PC"""
+    if request.method == 'POST':
+        nome = request.POST.get('nome')
+        chave_pub = request.POST.get('chave_publica').strip()
+        
+        ChaveSSH.objects.create(dono=request.user, nome=nome, chave_publica=chave_pub)
+        return redirect('listar_chaves')
+        
+    return render(request, 'importar_chave.html')
+
+@login_required
+def gerar_chave(request):
+    """Opção 2: O sistema gera, salva a pública e devolve o download da privada"""
+    if request.method == 'POST':
+        nome = request.POST.get('nome', 'Chave Gerada')
+        
+        # 1. Gerar o par de chaves RSA (2048 bits) na memória
+        private_key = rsa.generate_private_key(
+            public_exponent=65537,
+            key_size=2048,
+        )
+        
+        # 2. Exportar a Chave Privada (Formato .pem para o usuário baixar)
+        private_pem = private_key.private_bytes(
+            encoding=serialization.Encoding.PEM,
+            format=serialization.PrivateFormat.TraditionalOpenSSL,
+            encryption_algorithm=serialization.NoEncryption()
+        )
+        
+        # 3. Exportar a Chave Pública (Para salvar no banco)
+        public_ssh = private_key.public_key().public_bytes(
+            encoding=serialization.Encoding.OpenSSH,
+            format=serialization.PublicFormat.OpenSSH
+        ).decode('utf-8')
+        
+        # 4. Salvar pública no banco atrelada a este aluno
+        ChaveSSH.objects.create(dono=request.user, nome=nome, chave_publica=public_ssh)
+        
+        # 5. Devolver a Chave Privada como um download na hora
+        response = HttpResponse(private_pem, content_type='application/x-pem-file')
+        nome_arquivo = nome.replace(" ", "_").lower()
+        response['Content-Disposition'] = f'attachment; filename="{nome_arquivo}_ifcloud.pem"'
+        return response
+        
+        return render(request, 'gerar_chave.html')

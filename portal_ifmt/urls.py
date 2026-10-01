@@ -16,6 +16,10 @@ urlpatterns = [
     
     path('gerenciar/<str:nome_vm>/', views.gerenciar_maquina, name='gerenciar_maquina'),
     path('deletar/<str:nome_vm>/', views.deletar_maquina, name='deletar_vm'),
+    # chave ssh
+    path('chaves/', views.listar_chaves, name='listar_chaves'),
+    path('chaves/importar/', views.importar_chave, name='importar_chave'),
+    path('chaves/gerar/', views.gerar_chave, name='gerar_chave'),
     
     path('api/metricas/<str:nome_vm>/', views.metricas_maquina_api, name='api_metricas_maquina'),
     path('api/webhook/', views.webhook_ansible, name='webhook'), # Nossa nova rota secreta para os robôs

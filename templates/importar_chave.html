@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+
+{% block conteudo %}
+<div class="container">
+    <h2>Importar Chave Pública</h2>
+
+    <form method="POST">
+        {% csrf_token %} <!-- Obrigatório no Django para segurança -->
+
+        <label>Nome para Identificação (ex: Notebook CTI):</label>
+        <input type="text" name="nome" required placeholder="Meu Notebook">
+
+        <br><br>
+
+        <label>Chave Pública (Inicia com ssh-rsa):</label><br>
+        <textarea name="chave_publica" rows="5" cols="50" required placeholder="ssh-rsa AAAAB3NzaC1yc..."></textarea>
+
+        <br><br>
+        <button type="submit" class="btn btn-primary">Salvar Chave</button>
+        <a href="{% url 'listar_chaves' %}" class="btn btn-secondary">Cancelar</a>
+    </form>
+</div>
+{% endblock %}

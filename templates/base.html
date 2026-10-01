@@ -118,7 +118,7 @@
 <body>
     <div class="navbar">
         <div style="font-size: 1.2em; font-weight: bold;">
-            <a href="{% url 'landing' %}" style="margin-left: 0; color: #1abc9c;">☁️ IFMT Cloud</a>
+            <a href="{% url 'landing' %}" style="margin-left: 0; color: #1abc9c;">IFMT Cloud</a>
         </div>
         
         <div style="display: flex; align-items: center;">
@@ -126,9 +126,11 @@
             {% if user.is_authenticated %}
                 <a href="{% url 'painel_maquinas' %}">Meu Painel</a>
                 <a href="{% url 'criar_vm' %}">Nova Máquina</a>
-                
+                <a href="{% url 'listar_chaves' %}"> Minhas Chaves</a>
+
+
                 {% if user.is_staff %}
-                    <a href="{% url 'visao_global' %}" class="btn-admin">🌍 Visão Global</a>
+                    <a href="{% url 'visao_global' %}" class="btn-admin"> Visão Geral</a>
                 {% endif %}
                 
                 <span style="margin-left: 20px; color: #56CCF2;">| Olá, @{{ user.username }}</span>

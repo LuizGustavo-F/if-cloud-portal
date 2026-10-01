@@ -16,3 +16,14 @@ class Maquina(models.Model):
 
     def __str__(self):
         return f"{self.nome} ({self.status})"
+
+class ChaveSSH(models.Model):
+
+    dono = models.ForeignKey(User, on_delete=models.CASCADE)
+    nome = models.CharField(max_length=50, help_text="Ex: Notebook CTI, PC de Casa")
+    chave_publica = models.TextField()
+    data_criacao = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        
+        return f"{self.nome} ({self.dono.username})"

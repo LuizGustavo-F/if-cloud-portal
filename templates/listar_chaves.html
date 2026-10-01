@@ -1,0 +1,30 @@
+{% extends 'base.html' %}
+
+{% block conteudo %}
+<div class="container">
+    <h2>Minhas Chaves de Acesso (SSH)</h2>
+    <p>Gerencie as chaves utilizadas para acessar suas instâncias na IF Cloud.</p>
+
+    <div class="acoes-botoes">
+        <a href="{% url 'importar_chave' %}" class="btn btn-primary">Importar Chave Pública</a>
+        <a href="{% url 'gerar_chave' %}" class="btn btn-success">Gerar Novo Par de Chaves</a>
+    </div>
+
+    <hr>
+
+    {% if chaves %}
+    <ul>
+        {% for chave in chaves %}
+        <li>
+            <strong>{{ chave.nome }}</strong>
+            <br>
+            <small>Adicionada em: {{ chave.data_criacao|date:"d/m/Y H:i" }}</small>
+        </li>
+        {% endfor %}
+    </ul>
+    {% else %}
+    <p>Você ainda não possui nenhuma chave SSH cadastrada. Crie ou importe uma para poder instanciar Máquinas Virtuais.
+    </p>
+    {% endif %}
+</div>
+{% endblock %}

@@ -1,0 +1,24 @@
+{% extends 'base.html' %}
+
+{% block conteudo %}
+<div class="container">
+    <h2>Gerar Novo Par de Chaves</h2>
+
+    <div class="alert alert-warning">
+        <strong>Atenção (Zero Trust):</strong> O IF Cloud não armazena a sua chave privada.
+        Ao clicar em gerar, um arquivo <code>.pem</code> será baixado automaticamente.
+        Guarde-o em um local seguro, pois se você perdê-lo, perderá o acesso à sua Máquina Virtual.
+    </div>
+
+    <form method="POST">
+        {% csrf_token %}
+
+        <label>Dê um nome para esta chave (ex: Chave TCC):</label>
+        <input type="text" name="nome" required placeholder="Chave IFMT">
+
+        <br><br>
+        <button type="submit" class="btn btn-success">Gerar e Baixar Chave Privada (.pem)</button>
+        <a href="{% url 'listar_chaves' %}" class="btn btn-secondary">Cancelar</a>
+    </form>
+</div>
+{% endblock %}
