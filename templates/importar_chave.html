@@ -5,14 +5,14 @@
     <h2>Importar Chave Pública</h2>
 
     <form method="POST">
-        {% csrf_token %} <!-- Obrigatório no Django para segurança -->
+        {% csrf_token %} 
 
-        <label>Nome para Identificação (ex: Notebook CTI):</label>
+        <label>Nome para Identificação (ex: Notebook Casa):</label>
         <input type="text" name="nome" required placeholder="Meu Notebook">
 
         <br><br>
 
-        <label>Chave Pública (Inicia com ssh-rsa):</label><br>
+        <label>Chave Pública:</label><br>
         <textarea name="chave_publica" rows="5" cols="50" required placeholder="ssh-rsa AAAAB3NzaC1yc..."></textarea>
 
         <br><br>

@@ -321,4 +321,4 @@ def gerar_chave(request):
         response['Content-Disposition'] = f'attachment; filename="{nome_arquivo}_ifcloud.pem"'
         return response
         
-        return render(request, 'gerar_chave.html')
+    return render(request, 'gerar_chave.html')

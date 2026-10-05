@@ -17,7 +17,7 @@
     .dash-card.build { border-left-color: #f39c12; } /* Laranja */
     
     .dash-card h4 { margin: 0; color: #8e96a3; font-size: 0.9em; text-transform: uppercase; letter-spacing: 1px; }
-    .dash-card h2 { margin: 10px 0 0 0; color: #ffffff; font-size: 2.5em; line-height: 1; }
+    .dash-card h2 { margin: 0; color: #ffffff; font-size: 3.5em; line-height: 1; text-align: right; font-weight: bold; }
 
     .table-container { background: var(--bg-card); border-radius: 6px; border: 1px solid var(--border-color); overflow: hidden; }
     table { width: 100%; border-collapse: collapse; text-align: left; }
@@ -51,25 +51,22 @@
     <div class="dash-card total">
         <div>
             <h4>Minhas Máquinas</h4>
-            <h2>{{ total_vms }}</h2>
         </div>
-        <div style="font-size: 3em; opacity: 0.8;">🖥️</div>
+        <h2>{{ total_vms }}</h2>
     </div>
     
     <div class="dash-card online">
         <div>
             <h4>Instâncias Online</h4>
-            <h2>{{ vms_online }}</h2>
         </div>
-        <div style="font-size: 3em; opacity: 0.8;">⚡</div>
+        <h2>{{ vms_online }}</h2>
     </div>
     
     <div class="dash-card build">
         <div>
             <h4>Em Construção</h4>
-            <h2>{{ vms_construindo }}</h2>
         </div>
-        <div style="font-size: 3em; opacity: 0.8;">⏳</div>
+        <h2>{{ vms_construindo }}</h2>
     </div>
 </div>
 

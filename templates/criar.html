@@ -42,14 +42,27 @@
         max-width: 600px; /* Garante que o card não fique largo demais na metade dele */
     }
     
+    /* ESTILIZAÇÃO DOS COMPONENTES (Paleta Unificada) */
+    .ia-card { 
+        background-color: #202428; 
+        border: 1px solid #333940; 
+        border-radius: 8px; 
+        padding: 25px; 
+        border-left: 4px solid var(--primary-color); /* Borda verde */
+        max-width: 600px; 
+    }
+    
     .ia-header { display: flex; align-items: center; margin-bottom: 15px; }
-    .ia-header h3 { margin: 0; color: #bb86fc; font-size: 1.3em; }
+    .ia-header h3 { margin: 0; color: var(--primary-color); font-size: 1.3em; } /* Título verde */
     .ia-desc { color: #8e96a3; font-size: 0.95em; margin-bottom: 20px; line-height: 1.5; }
-    .ia-result { background-color: rgba(187, 134, 252, 0.1); border: 1px solid rgba(187, 134, 252, 0.3); padding: 15px; border-radius: 6px; margin-top: 20px; color: #e2d4f8; }
-    .ia-result strong { color: #bb86fc; }
+    
+    /* Fundo verde translúcido para o resultado da IA */
+    .ia-result { background-color: rgba(26, 188, 156, 0.1); border: 1px solid rgba(26, 188, 156, 0.3); padding: 15px; border-radius: 6px; margin-top: 20px; color: var(--text-main); }
+    .ia-result strong { color: var(--primary-color); }
 
-    .btn-ia { background-color: #bb86fc; color: #111; margin-top: 15px; width: 100%; border: none; padding: 10px; border-radius: 5px; cursor: pointer; font-weight: bold;}
-    .btn-ia:hover { background-color: #a35bfa; }
+    /* Botão secundário elegante */
+    .btn-ia { background-color: transparent; color: var(--primary-color); border: 1px solid var(--primary-color); margin-top: 15px; width: 100%; padding: 10px; border-radius: 5px; cursor: pointer; font-weight: bold; transition: 0.2s;}
+    .btn-ia:hover { background-color: var(--primary-color); color: #111; }
     
     .btn-submit { background-color: var(--primary-color); color: #111; width: 100%; font-size: 1.1em; padding: 15px; margin-top: 20px; border: none; border-radius: 5px; cursor: pointer; font-weight: bold;}
     .btn-submit:hover { background-color: var(--primary-hover); }
@@ -67,7 +80,7 @@
     }
 </style>
 
-<h2 class="page-title">Criar Novo Servidor</h2>
+<h2 class="page-title">Novo Servidor</h2>
 
 {% if mensagem_erro %}
 <div class="erro">{{ mensagem_erro }}</div>
@@ -75,7 +88,6 @@
 
 <div class="layout-duas-colunas">
 
-    <!-- COLUNA ESQUERDA: Formulário Principal -->
     <div class="coluna-principal">
         <form method="POST" action="{% url 'processar' %}">
             {% csrf_token %}
@@ -97,7 +109,7 @@
             </div>
 
             <div class="form-group">
-                <label>Sua Chave SSH de Acesso (Zero Trust):</label>
+                <label>Sua Chave SSH de Acesso:</label>
                 <select name="chave_ssh" required>
                     <option value="">-- Selecione uma Chave Salva --</option>
                     {% for chave in minhas_chaves %}
@@ -111,7 +123,7 @@
                 </span>
             </div>
 
-            <button type="submit" class="btn btn-submit">Construir Máquina</button>
+            <button type="submit" class="btn btn-submit">Confirmar</button>
         </form>
     </div>
 
@@ -119,10 +131,8 @@
     <div class="coluna-lateral">
         <div class="ia-card">
             <div class="ia-header">
-                <h3>Assistente de Infraestrutura</h3>
+                <h3>Não sabe qual predefinição escolher?</h3>
             </div>
-            <p class="ia-desc">Não sabe qual predefinição escolher?</p>
-
             <form method="POST" action="{% url 'criar_vm' %}">
                 {% csrf_token %}
                 <div class="form-group">
@@ -143,12 +153,12 @@
                     </select>
                 </div>
 
-                <button type="submit" class="btn btn-ia"> Consultar Especialista</button>
+                <button type="submit" class="btn btn-ia">Confirmar</button>
             </form>
 
             {% if recomendacao %}
             <div class="ia-result">
-                <h4 style="margin-top: 0; margin-bottom: 10px; color: #bb86fc;">Recomendação da IA:</h4>
+                <h4 style="margin-top: 0; margin-bottom: 10px; color: var(--primary-color);">Recomendação da IA:</h4>
                 <p style="margin: 5px 0;"><strong>Hardware Ideal:</strong> {{ recomendacao.flavor_recomendado }}</p>
                 <p style="margin: 5px 0;"><strong>Especificações:</strong> {{ recomendacao.especificacoes }}</p>
                 <p style="margin: 5px 0;"><strong>Justificativa:</strong> {{ recomendacao.justificativa_da_ia }}</p>
